@@ -13,13 +13,14 @@ public class Guess
 
     public void addElement(JLabel element)
     {
-        for(int i = 0; i < difficulty; i++)
+        int count = 0;
+
+        while(guess[count] != null)
         {
-            if(guess[i] == null)
-            {
-                guess[i] = element;
-            }
+            count++;
         }
+
+        guess[count] = element;
     }
 
     public int compareElement(Guess playerGuess, Guess computerGuess)
@@ -30,7 +31,7 @@ public class Guess
         {
             for(int y = 0; y < difficulty; y++)
             {
-                if(playerGuess.guess[i] == computerGuess.guess[y] || i != y)
+                if(playerGuess.guess[i].getIcon().toString() == computerGuess.guess[y].getIcon().toString() || i != y)
                 {
                     count++;
                 }
@@ -48,7 +49,7 @@ public class Guess
         {
             for(int y = 0; y < difficulty; y++)
             {
-                if(playerGuess.guess[i] == computerGuess.guess[y] || i == y)
+                if(playerGuess.guess[i].getIcon().toString() == computerGuess.guess[y].getIcon().toString() || i == y)
                 {
                     count++;
                 }
@@ -62,5 +63,17 @@ public class Guess
     public JLabel getElement(Guess computerGuess, int i)
     {
         return computerGuess.guess[i];
+    }
+
+    public int getCount(Guess computerGuess)
+    {
+        int count = 0;
+
+        while(computerGuess.guess[count] != null)
+        {
+            count++;
+        }
+
+        return count;
     }
 }

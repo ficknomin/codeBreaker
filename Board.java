@@ -9,6 +9,8 @@ public class Board implements ActionListener
     private int counterMain = 4;
     private int counterSupport = 4;
     private int buffer = counterMain;
+    private int guessCount = 0;
+    private int correctionCounter = 0;
 
 
     private JFrame window = new JFrame("Code Breaker");
@@ -18,21 +20,20 @@ public class Board implements ActionListener
     private JLabel[] attemptLabels = new JLabel[100];
     private JLabel[] correctionLabels = new JLabel[100];
     private Guess[] playerGuess = new Guess[100];
-    private Guess[] computerCorrecrion = new Guess[100];
 
     private Guess computerGuess = new Guess(4);
     private int[] computerGuessId = new int[100];
 
 
-    private Picture red = new Picture("Colour_0.png");
-    private Picture orange = new Picture("Colour_1.png");
-    private Picture yellow = new Picture("Colour_2.png");
-    private Picture green = new Picture("Colour_3.png");
-    private Picture blue = new Picture("Colour_4.png");
-    private Picture indigo = new Picture("Colour_5.png");
-    private Picture violet = new Picture("Colour_6.png");
-    private Picture empty = new Picture("Empty.png");
-    private Picture[] colourPictures = {red, orange, yellow, green, blue, indigo, violet};
+    private ImageIcon red = new ImageIcon("Colour_0.png");
+    private ImageIcon orange = new ImageIcon("Colour_1.png");
+    private ImageIcon yellow = new ImageIcon("Colour_2.png");
+    private ImageIcon green = new ImageIcon("Colour_3.png");
+    private ImageIcon blue = new ImageIcon("Colour_4.png");
+    private ImageIcon indigo = new ImageIcon("Colour_5.png");
+    private ImageIcon violet = new ImageIcon("Colour_6.png");
+    private ImageIcon empty = new ImageIcon("Empty.png");
+    private ImageIcon[] imageIcons = {red, orange, yellow, green, blue, indigo, violet};
 
     private JButton colourOne = new JButton(red);
     private JButton colourTwo = new JButton(orange);
@@ -72,10 +73,9 @@ public class Board implements ActionListener
             
             for(int z = 0; z < d; z++)
             {
-                JLabel emptyCorrection = new JLabel(empty);
-                correctionLabels[z] = emptyCorrection;
-                emptyCorrection.setPreferredSize(new Dimension(10, 10));
-                correctionPanel.add(emptyCorrection);
+                correctionLabels[z * (y+1)] = new JLabel(empty);
+                correctionLabels[z * (y+1)].setPreferredSize(new Dimension(10, 10));
+                correctionPanel.add(correctionLabels[z * (y+1)]);
             }
             
             row.add(correctionPanel);
@@ -98,8 +98,12 @@ public class Board implements ActionListener
         for(int i = 0; i < d; i++)
         {
             computerGuessId[i] = (int) (Math.random()*7);
-            computerGuess.addElement(new JLabel(colourPictures[computerGuessId[i]]));
+            computerGuess.addElement(new JLabel(imageIcons[computerGuessId[i]]));
+            System.out.println(computerGuess.getElement(computerGuess, i));
         }
+
+        playerGuess[guessCount] = new Guess(d);
+
     }
 
     public int sizeOfLabels(JLabel[] array)
@@ -115,51 +119,59 @@ public class Board implements ActionListener
 
     public void actionPerformed(ActionEvent e) 
     {   
+        
         if(e.getSource() == colourOne)
         {
-            attemptLabels[sizeOfLabels(attemptLabels) - counterMain].setIcon(new ImageIcon("Colour_0.png"));
+            attemptLabels[sizeOfLabels(attemptLabels) - counterMain].setIcon(red);
+            playerGuess[guessCount].addElement(attemptLabels[sizeOfLabels(attemptLabels) - counterMain]);
             counterMain--;
             counterSupport--;
         }
         
         if(e.getSource() == colourTwo)
         {
-            attemptLabels[sizeOfLabels(attemptLabels) - counterMain].setIcon(new ImageIcon("Colour_1.png"));
+            attemptLabels[sizeOfLabels(attemptLabels) - counterMain].setIcon(orange);
+            playerGuess[guessCount].addElement(attemptLabels[sizeOfLabels(attemptLabels) - counterMain]);
             counterMain--;
             counterSupport--;
         }
 
         if(e.getSource() == colourThree)
         {
-            attemptLabels[sizeOfLabels(attemptLabels) - counterMain].setIcon(new ImageIcon("Colour_2.png"));
+            attemptLabels[sizeOfLabels(attemptLabels) - counterMain].setIcon(yellow);
+            playerGuess[guessCount].addElement(attemptLabels[sizeOfLabels(attemptLabels) - counterMain]);
             counterMain--;
             counterSupport--;
         }
 
         if(e.getSource() == colourFour)
         {
-            attemptLabels[sizeOfLabels(attemptLabels) - counterMain].setIcon(new ImageIcon("Colour_3.png"));
+            attemptLabels[sizeOfLabels(attemptLabels) - counterMain].setIcon(green);
+            playerGuess[guessCount].addElement(attemptLabels[sizeOfLabels(attemptLabels) - counterMain]);
             counterMain--;
             counterSupport--;
         }
 
         if(e.getSource() == colourFive)
         {
-            attemptLabels[sizeOfLabels(attemptLabels) - counterMain].setIcon(new ImageIcon("Colour_4.png"));
+            attemptLabels[sizeOfLabels(attemptLabels) - counterMain].setIcon(blue);
+            playerGuess[guessCount].addElement(attemptLabels[sizeOfLabels(attemptLabels) - counterMain]);
             counterMain--;
             counterSupport--;
         }
 
         if(e.getSource() == colourSix)
         {
-            attemptLabels[sizeOfLabels(attemptLabels) - counterMain].setIcon(new ImageIcon("Colour_5.png"));
+            attemptLabels[sizeOfLabels(attemptLabels) - counterMain].setIcon(indigo);
+            playerGuess[guessCount].addElement(attemptLabels[sizeOfLabels(attemptLabels) - counterMain]);
             counterMain--;
             counterSupport--;
         }
 
         if(e.getSource() == colourSeven)
         {
-            attemptLabels[sizeOfLabels(attemptLabels) - counterMain].setIcon(new ImageIcon("Colour_6.png"));
+            attemptLabels[sizeOfLabels(attemptLabels) - counterMain].setIcon(violet);
+            playerGuess[guessCount].addElement(attemptLabels[sizeOfLabels(attemptLabels) - counterMain]);
             counterMain--;
             counterSupport--;
         }
@@ -171,6 +183,52 @@ public class Board implements ActionListener
             buffer = counterMain;
         }
 
+        if(playerGuess[guessCount].getCount(playerGuess[guessCount]) == difficulty - 2)
+            {
+                for(int i = 0; i < playerGuess[guessCount].getCount(playerGuess[guessCount]); i++)
+                {
+                    System.out.println(playerGuess[guessCount].getElement(playerGuess[guessCount], i));
+                }
+                int position = playerGuess[guessCount].comparePosition(playerGuess[guessCount], computerGuess);
+                int element  = playerGuess[guessCount].compareElement(playerGuess[guessCount], computerGuess);
+
+                System.out.println(position);
+                System.out.println(element);
+
+                if(position == difficulty - 2)
+                {
+                    JFrame winWindow = new JFrame("WIN");
+                    winWindow.setSize(200, 100);
+
+                    JPanel winPanel = new JPanel();
+                    winWindow.setContentPane(winPanel);
+
+                    JLabel winLabel = new JLabel("YOU WIN!");
+                    winPanel.add(winLabel);
+
+                    winWindow.setVisible(true);
+                }
+
+                for(int i = 0; i < position; i++)
+                {
+                    correctionLabels[sizeOfLabels(correctionLabels) - ((guessCount + 1) * 4) + correctionCounter].setIcon(new ImageIcon("Score_0.png"));
+                    correctionCounter++;
+                }
+
+                for(int y = 0; y < element; y++)
+                {
+                    correctionLabels[sizeOfLabels(correctionLabels) - ((guessCount + 1) * 4) + correctionCounter].setIcon(new ImageIcon("Score_1.png"));
+                    correctionCounter++;
+                }
+
+                if(correctionCounter == difficulty - 2)
+                {
+                    correctionCounter = 0;
+                }
+
+                guessCount++;
+                playerGuess[guessCount] = new Guess(difficulty - 2);
+            }
     }
 
 }
