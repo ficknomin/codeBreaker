@@ -26,12 +26,14 @@ public class Guess
     public int compareElement(Guess playerGuess, Guess computerGuess)
     {
         int count = 0;
+        JLabel[] playerGuesses = new JLabel[100];
+        JLabel[] computerGuesses = new JLabel[difficulty];
 
         for(int i = 0; i <  difficulty; i++)
         {
             for(int y = 0; y < difficulty; y++)
             {
-                if(playerGuess.guess[i].getIcon().toString() == computerGuess.guess[y].getIcon().toString() || i != y)
+                if(playerGuess.guess[i].getIcon().toString() == computerGuess.guess[y].getIcon().toString() && i != y)
                 {
                     count++;
                 }
@@ -49,7 +51,7 @@ public class Guess
         {
             for(int y = 0; y < difficulty; y++)
             {
-                if(playerGuess.guess[i].getIcon().toString() == computerGuess.guess[y].getIcon().toString() || i == y)
+                if(playerGuess.guess[i].getIcon().toString() == computerGuess.guess[y].getIcon().toString() && i == y)
                 {
                     count++;
                 }

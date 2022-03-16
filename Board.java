@@ -11,6 +11,7 @@ public class Board implements ActionListener
     private int buffer = counterMain;
     private int guessCount = 0;
     private int correctionCounter = 0;
+    private int correctionLabelsCounter = 0;
 
 
     private JFrame window = new JFrame("Code Breaker");
@@ -73,13 +74,15 @@ public class Board implements ActionListener
             
             for(int z = 0; z < d; z++)
             {
-                correctionLabels[z * (y+1)] = new JLabel(empty);
-                correctionLabels[z * (y+1)].setPreferredSize(new Dimension(10, 10));
-                correctionPanel.add(correctionLabels[z * (y+1)]);
+                correctionLabels[z + correctionLabelsCounter] = new JLabel(empty);
+                correctionLabels[z + correctionLabelsCounter].setPreferredSize(new Dimension(10, 10));
+                correctionPanel.add(correctionLabels[z + correctionLabelsCounter]);
             }
             
             row.add(correctionPanel);
             mainPanel.add(row);
+
+            correctionLabelsCounter = correctionLabelsCounter + d;
         }
 
         colourPanel.setLayout(new GridLayout(1,7));
@@ -185,10 +188,6 @@ public class Board implements ActionListener
 
         if(playerGuess[guessCount].getCount(playerGuess[guessCount]) == difficulty - 2)
             {
-                for(int i = 0; i < playerGuess[guessCount].getCount(playerGuess[guessCount]); i++)
-                {
-                    System.out.println(playerGuess[guessCount].getElement(playerGuess[guessCount], i));
-                }
                 int position = playerGuess[guessCount].comparePosition(playerGuess[guessCount], computerGuess);
                 int element  = playerGuess[guessCount].compareElement(playerGuess[guessCount], computerGuess);
 
@@ -211,22 +210,20 @@ public class Board implements ActionListener
 
                 for(int i = 0; i < position; i++)
                 {
-                    correctionLabels[sizeOfLabels(correctionLabels) - ((guessCount + 1) * 4) + correctionCounter].setIcon(new ImageIcon("Score_0.png"));
+                    correctionLabels[(sizeOfLabels(correctionLabels) - ((guessCount + 1) * 4)) + correctionCounter].setIcon(new ImageIcon("Score_0.png"));
                     correctionCounter++;
                 }
 
-                for(int y = 0; y < element; y++)
+
+                /*for(int y = 0; y < element; y++)
                 {
                     correctionLabels[sizeOfLabels(correctionLabels) - ((guessCount + 1) * 4) + correctionCounter].setIcon(new ImageIcon("Score_1.png"));
                     correctionCounter++;
-                }
+                }*/
 
-                if(correctionCounter == difficulty - 2)
-                {
-                    correctionCounter = 0;
-                }
 
                 guessCount++;
+                correctionCounter = 0;
                 playerGuess[guessCount] = new Guess(difficulty - 2);
             }
     }
