@@ -38,6 +38,27 @@ public class Guess
                     continue;
                 }
 
+                if(computerGuess.guess[i] == null)
+                {
+                    continue;
+                }
+
+                if(computerGuess.guess[i].getIcon().toString() == playerGuess.guess[y].getIcon().toString() && i == y)
+                {
+                    JLabel[] computerGuessBuffer = new JLabel[sizeOfGuess(computerGuess)];
+
+                    for(int x = 0, z = 0; x < sizeOfGuess(computerGuess); x++)
+                    {
+                        if (x == i)
+                        {
+                            continue;
+                        }    
+                        computerGuessBuffer[z++] = playerGuess.guess[x];
+                    }
+                    System.arraycopy(computerGuessBuffer, 0, playerGuess.guess, 0, sizeOfGuess(computerGuess));
+                    break;
+                }
+
                 if(computerGuess.guess[i].getIcon().toString() == playerGuess.guess[y].getIcon().toString() && i != y)
                 {
                     JLabel[] guessBuffer = new JLabel[sizeOfGuess(playerGuess)];
@@ -54,10 +75,8 @@ public class Guess
                     System.arraycopy(guessBuffer, 0, playerGuess.guess, 0, sizeOfGuess(playerGuess));
                     break;
                 }
-
             }
         }
-
 
         return count;
     }
