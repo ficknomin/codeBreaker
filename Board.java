@@ -191,9 +191,6 @@ public class Board implements ActionListener
                 int position = playerGuess[guessCount].comparePosition(playerGuess[guessCount], computerGuess);
                 int element  = playerGuess[guessCount].compareElement(playerGuess[guessCount], computerGuess);
 
-                System.out.println(position);
-                System.out.println(element);
-
                 if(position == difficulty - 2)
                 {
                     JFrame winWindow = new JFrame("WIN");
@@ -215,11 +212,11 @@ public class Board implements ActionListener
                 }
 
 
-                /*for(int y = 0; y < element; y++)
+                for(int y = 0; y < element; y++)
                 {
                     correctionLabels[sizeOfLabels(correctionLabels) - ((guessCount + 1) * 4) + correctionCounter].setIcon(new ImageIcon("Score_1.png"));
                     correctionCounter++;
-                }*/
+                }
 
 
                 guessCount++;

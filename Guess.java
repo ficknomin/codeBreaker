@@ -1,5 +1,6 @@
 import javax.swing.*;
 
+
 public class Guess
 {
     int difficulty;
@@ -26,19 +27,37 @@ public class Guess
     public int compareElement(Guess playerGuess, Guess computerGuess)
     {
         int count = 0;
-        JLabel[] playerGuesses = new JLabel[100];
-        JLabel[] computerGuesses = new JLabel[difficulty];
 
         for(int i = 0; i <  difficulty; i++)
         {
             for(int y = 0; y < difficulty; y++)
             {
-                if(playerGuess.guess[i].getIcon().toString() == computerGuess.guess[y].getIcon().toString() && i != y)
+                
+                if(playerGuess.guess[y] == null)
                 {
-                    count++;
+                    continue;
                 }
+
+                if(computerGuess.guess[i].getIcon().toString() == playerGuess.guess[y].getIcon().toString() && i != y)
+                {
+                    JLabel[] guessBuffer = new JLabel[sizeOfGuess(playerGuess)];
+
+                    for(int x = 0, z = 0; x < sizeOfGuess(playerGuess); x++)
+                    {
+                        if (x == y)
+                        {
+                            count++;
+                            continue;
+                        }    
+                        guessBuffer[z++] = playerGuess.guess[x];
+                    }
+                    System.arraycopy(guessBuffer, 0, playerGuess.guess, 0, sizeOfGuess(playerGuess));
+                    break;
+                }
+
             }
         }
+
 
         return count;
     }
@@ -76,6 +95,23 @@ public class Guess
             count++;
         }
 
+        return count;
+    }
+
+    public int sizeOfGuess(Guess array)
+    {
+        int count = 0;
+        
+        for(int i = 0; i < array.guess.length; i++)
+        {
+            if(array.guess[i] == null)
+            {
+                break;
+            }
+
+            count++;
+        }
+    
         return count;
     }
 }
