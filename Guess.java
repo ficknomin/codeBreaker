@@ -27,12 +27,12 @@ public class Guess
     public int compareElement(Guess playerGuess, Guess computerGuess)
     {
         int count = 0;
+        int countCorrect = 0;
 
-        for(int i = 0; i <  difficulty; i++)
+        for(int i = 0; i <  sizeOfGuess(computerGuess); i++)
         {
-            for(int y = 0; y < difficulty; y++)
+            for(int y = 0; y < sizeOfGuess(playerGuess); y++)
             {
-                
                 if(playerGuess.guess[y] == null)
                 {
                     continue;
@@ -45,7 +45,19 @@ public class Guess
 
                 if(computerGuess.guess[i].getIcon().toString() == playerGuess.guess[y].getIcon().toString() && i == y)
                 {
+                    countCorrect++;
                     JLabel[] computerGuessBuffer = new JLabel[sizeOfGuess(computerGuess)];
+                    JLabel[] guessBuffer = new JLabel[sizeOfGuess(playerGuess)];
+
+                    for(int x = 0, z = 0; x < sizeOfGuess(playerGuess); x++)
+                    {
+                        if (x == y)
+                        {
+                            continue;
+                        }    
+                        guessBuffer[z++] = playerGuess.guess[x];
+                    }
+                    System.arraycopy(guessBuffer, 0, playerGuess.guess, 0, sizeOfGuess(playerGuess));
 
                     for(int x = 0, z = 0; x < sizeOfGuess(computerGuess); x++)
                     {
@@ -53,29 +65,51 @@ public class Guess
                         {
                             continue;
                         }    
-                        computerGuessBuffer[z++] = playerGuess.guess[x];
+                        computerGuessBuffer[z++] = computerGuess.guess[x];
                     }
-                    System.arraycopy(computerGuessBuffer, 0, playerGuess.guess, 0, sizeOfGuess(computerGuess));
-                    break;
+                    System.arraycopy(computerGuessBuffer, 0, computerGuess.guess, 0, sizeOfGuess(computerGuess));
+                }
+            }
+        }
+        
+        for(int i = 0; i <  sizeOfGuess(computerGuess); i++)
+        {
+            for(int y = 0; y < sizeOfGuess(playerGuess); y++)
+            {
+                
+                if(playerGuess.guess[y] == null)
+                {
+                    continue;
                 }
 
-                if(computerGuess.guess[i].getIcon().toString() == playerGuess.guess[y].getIcon().toString() && i != y)
+                if(computerGuess.guess[i] == null)
                 {
+                    continue;
+                }
+
+                if(computerGuess.guess[i].getIcon().toString() == playerGuess.guess[y].getIcon().toString())
+                {
+                    count++;
                     JLabel[] guessBuffer = new JLabel[sizeOfGuess(playerGuess)];
 
                     for(int x = 0, z = 0; x < sizeOfGuess(playerGuess); x++)
                     {
                         if (x == y)
                         {
-                            count++;
                             continue;
                         }    
                         guessBuffer[z++] = playerGuess.guess[x];
                     }
                     System.arraycopy(guessBuffer, 0, playerGuess.guess, 0, sizeOfGuess(playerGuess));
+
                     break;
                 }
             }
+        }
+
+        if(count + countCorrect > difficulty)
+        {
+            count--;
         }
 
         return count;
@@ -100,9 +134,22 @@ public class Guess
 
     }
 
+    public void copyPaste(Guess guessOne, Guess guessTwo)
+    {
+        for (int i = 0; i < sizeOfGuess(guessOne); i++)
+        {
+            guessTwo.guess[i] = guessOne.guess[i];
+        }
+    }
+
     public JLabel getElement(Guess computerGuess, int i)
     {
         return computerGuess.guess[i];
+    }
+
+    public JLabel[] getArray()
+    {
+        return guess;
     }
 
     public int getCount(Guess computerGuess)
@@ -125,10 +172,12 @@ public class Guess
         {
             if(array.guess[i] == null)
             {
-                break;
+                continue;
             }
-
-            count++;
+            else
+            {
+                count++;
+            }
         }
     
         return count;

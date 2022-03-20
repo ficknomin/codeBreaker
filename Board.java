@@ -2,19 +2,35 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
+/**
+ * 
+ * Board is the bone structure class of my version of Codebreaker.
+ * 
+ * The only argument passed by the user is d number of colours being guessed.
+ * 
+ * Two is added to d to indicate the number of tries the player gets (difficulty).
+ * 
+ * 
+ * 
+ * 
+ */
+
 public class Board implements ActionListener
 {
 
     private int difficulty;
-    private int counterMain = 4;
-    private int counterSupport = 4;
-    private int buffer = counterMain;
+    private int counterMain;
+    private int counterSupport;
+    private int buffer;
     private int guessCount = 0;
     private int correctionCounter = 0;
     private int correctionLabelsCounter = 0;
 
 
     private JFrame window = new JFrame("Code Breaker");
+    private JFrame winWindow = new JFrame("WIN");
+    private JFrame loseWindow = new JFrame("LOSE");
+
     private JPanel mainPanel = new JPanel();
     private JPanel colourPanel = new JPanel();
 
@@ -23,6 +39,7 @@ public class Board implements ActionListener
     private Guess[] playerGuess = new Guess[100];
 
     private Guess computerGuess = new Guess(4);
+    private Guess computerBuffer = new Guess(4);
     private int[] computerGuessId = new int[100];
 
 
@@ -36,6 +53,9 @@ public class Board implements ActionListener
     private ImageIcon empty = new ImageIcon("Empty.png");
     private ImageIcon[] imageIcons = {red, orange, yellow, green, blue, indigo, violet};
 
+    private JButton newGame = new JButton("NEW GAME");
+    private JButton exit = new JButton("EXIT CODEBREAKER");
+
     private JButton colourOne = new JButton(red);
     private JButton colourTwo = new JButton(orange);
     private JButton colourThree = new JButton(yellow);
@@ -47,13 +67,20 @@ public class Board implements ActionListener
 
     public Board(int d)
     {
-        window.setSize(400,650);
+        window.setSize(320+(d*20),580+(d*20));
         window.setResizable(false);
         window.setContentPane(mainPanel);
 
         this.difficulty = d + 2;
         mainPanel.setLayout(new GridLayout(difficulty + 1,1));
         mainPanel.setBackground(Color.GRAY);
+
+        counterMain = d;
+        counterSupport = d;
+        buffer = counterMain;
+
+        newGame.addActionListener(this);
+        exit.addActionListener(this);
 
         for(int y = 0; y < this.difficulty; y++)
         {
@@ -106,7 +133,7 @@ public class Board implements ActionListener
         }
 
         playerGuess[guessCount] = new Guess(d);
-
+        computerGuess.copyPaste(computerGuess, computerBuffer);
     }
 
     public int sizeOfLabels(JLabel[] array)
@@ -178,11 +205,25 @@ public class Board implements ActionListener
             counterMain--;
             counterSupport--;
         }
+
+        if(e.getSource() == newGame)
+        {
+            winWindow.setVisible(false);
+            loseWindow.setVisible(false);
+            window.setVisible(false);
+
+            Board newGame = new Board(difficulty-2);
+        }
+
+        if(e.getSource() == exit)
+        {
+            System.exit(0);
+        }
         
         if(counterSupport < 1)
         {
-            counterMain = buffer + 4;
-            counterSupport = 4;
+            counterMain = buffer + (difficulty-2);
+            counterSupport = difficulty-2;
             buffer = counterMain;
         }
 
@@ -193,34 +234,62 @@ public class Board implements ActionListener
 
                 if(position == difficulty - 2)
                 {
-                    JFrame winWindow = new JFrame("WIN");
                     winWindow.setSize(200, 100);
 
                     JPanel winPanel = new JPanel();
+                    winPanel.setLayout(new GridLayout(2, 1));
                     winWindow.setContentPane(winPanel);
 
+                    JPanel buttonPanel = new JPanel();
+                    buttonPanel.setLayout(new GridLayout(1, 2));
+
                     JLabel winLabel = new JLabel("YOU WIN!");
+
                     winPanel.add(winLabel);
+                    buttonPanel.add(newGame);
+                    buttonPanel.add(exit);
+                    winPanel.add(buttonPanel);
 
                     winWindow.setVisible(true);
                 }
 
-                for(int i = 0; i < position; i++)
+                if(guessCount == difficulty - 1 && position != difficulty - 2)
                 {
-                    correctionLabels[(sizeOfLabels(correctionLabels) - ((guessCount + 1) * 4)) + correctionCounter].setIcon(new ImageIcon("Score_0.png"));
-                    correctionCounter++;
+                    loseWindow.setSize(200, 100);
+
+                    JPanel losePanel = new JPanel();
+                    losePanel.setLayout(new GridLayout(2, 1));
+                    loseWindow.setContentPane(losePanel);
+
+                    JPanel buttonPanel = new JPanel();
+                    JLabel winLabel = new JLabel("YOU LOSE :(");
+
+                    buttonPanel.setLayout(new GridLayout(1, 2));
+                    buttonPanel.add(newGame);
+                    buttonPanel.add(exit);
+
+                    losePanel.add(winLabel);
+                    losePanel.add(buttonPanel);
+                    
+                    loseWindow.setVisible(true);
                 }
 
+                for(int i = 0; i < position; i++)
+                {
+                    System.out.println(correctionLabels[i]);
+                    correctionLabels[(sizeOfLabels(correctionLabels) - ((guessCount + 1) * (difficulty-2))) + correctionCounter].setIcon(new ImageIcon("Score_0.png"));
+                    correctionCounter++;
+                }
 
                 for(int y = 0; y < element; y++)
                 {
-                    correctionLabels[sizeOfLabels(correctionLabels) - ((guessCount + 1) * 4) + correctionCounter].setIcon(new ImageIcon("Score_1.png"));
+                    correctionLabels[sizeOfLabels(correctionLabels) - ((guessCount + 1) * (difficulty-2)) + correctionCounter].setIcon(new ImageIcon("Score_1.png"));
                     correctionCounter++;
                 }
 
-
                 guessCount++;
                 correctionCounter = 0;
+                computerGuess.copyPaste(computerBuffer, computerGuess);
                 playerGuess[guessCount] = new Guess(difficulty - 2);
             }
     }
