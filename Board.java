@@ -3,16 +3,9 @@ import java.awt.*;
 import java.awt.event.*;
 
 /**
- * 
  * Board is the bone structure class of my version of Codebreaker.
  * 
- * The only argument passed by the user is d number of colours being guessed.
- * 
- * Two is added to d to indicate the number of tries the player gets (difficulty).
- * 
- * 
- * 
- * 
+ * It creates a clean CodeBreaker board, when a game is finished there is a choice to close the game or start a new one.
  */
 
 public class Board implements ActionListener
@@ -65,6 +58,13 @@ public class Board implements ActionListener
     private JButton colourSeven = new JButton(violet);
     private JButton[] colours = {colourOne,colourTwo,colourThree, colourFour, colourFive, colourSix, colourSeven};
 
+    /**
+     * Constructor for the board class.
+     * 
+     * @param d is the number of colours guessed.
+     * 
+     * 2 is added to d into the difficulty variable, which indicates the number of tries a player has.
+     */
     public Board(int d)
     {
         window.setSize(320+(d*20),580+(d*20));
@@ -136,6 +136,11 @@ public class Board implements ActionListener
         computerGuess.copyPaste(computerGuess, computerBuffer);
     }
 
+    /**
+     * Method to count the number of elements of a JLabel array.
+     * @param array
+     * @return the number of elements.
+     */
     public int sizeOfLabels(JLabel[] array)
     {
         int count = 0;
@@ -147,6 +152,10 @@ public class Board implements ActionListener
         return count;
     }
 
+    /**
+     * Action listener that responds to all the buttons pressed.
+     * Includes the condition for when the game ends or when the guesses need to be compared.
+     */
     public void actionPerformed(ActionEvent e) 
     {   
         
@@ -227,7 +236,7 @@ public class Board implements ActionListener
             buffer = counterMain;
         }
 
-        if(playerGuess[guessCount].getCount(playerGuess[guessCount]) == difficulty - 2)
+        if(playerGuess[guessCount].sizeOfGuess(playerGuess[guessCount]) == difficulty - 2)
             {
                 int position = playerGuess[guessCount].comparePosition(playerGuess[guessCount], computerGuess);
                 int element  = playerGuess[guessCount].compareElement(playerGuess[guessCount], computerGuess);
